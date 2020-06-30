@@ -5,12 +5,6 @@ import AppError from '@shared/errors/AppError';
 import Product from '../infra/typeorm/entities/Product';
 import IProductsRepository from '../repositories/IProductsRepository';
 
-interface IRequest {
-  name: string;
-  price: number;
-  quantity: number;
-}
-
 @injectable()
 class CreateProductService {
   constructor(
@@ -18,18 +12,10 @@ class CreateProductService {
     private productsRepository: IProductsRepository,
   ) {}
 
-  public async execute({ name, price, quantity }: IRequest): Promise<Product> {
-    if (await this.productsRepository.findByName(name)) {
-      throw new AppError('Product name already used.');
-    }
+  public async execute(): Promise<Product[]> {
+    const products = await this.productsRepository.show();
 
-    const customer = await this.productsRepository.create({
-      name,
-      price,
-      quantity,
-    });
-
-    return customer;
+    return products;
   }
 }
 

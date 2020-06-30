@@ -2,9 +2,24 @@ import { Request, Response } from 'express';
 
 import { container } from 'tsyringe';
 import CreateProductService from '@modules/products/services/CreateProductService';
+import ShowProductsService from '@modules/products/services/ShowProductService';
 
 export default class ProductsController {
   public async create(request: Request, response: Response): Promise<Response> {
-    // TODO
+    const { name, price, quantity } = request.body;
+
+    const createProduct = container.resolve(CreateProductService);
+
+    const product = await createProduct.execute({ name, price, quantity });
+
+    return response.json(product);
+  }
+
+  public async show(request: Request, response: Response): Promise<Response> {
+    const showProducts = container.resolve(ShowProductsService);
+
+    const products = await showProducts.execute();
+
+    return response.json(products);
   }
 }
